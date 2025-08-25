@@ -50,7 +50,7 @@ environment {
                         kubectl apply -f networkpolicy.yaml
                         '''
                         sh 'kubectl get pods -n wordpress'
-                        sh 'kubectl wait --for=condition=ready pod -l app=wordpress --timeout=90s'
+                        sh 'kubectl wait --for=condition=ready pod -l app=wordpress --timeout=90s -n wordpress'
                         sh 'kubectl port-forward service/wordpress-service 3000:80 -n wordpress'
                     }
                 }
