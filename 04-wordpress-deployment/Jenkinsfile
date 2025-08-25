@@ -3,6 +3,7 @@ pipeline {
 environment {
         DOCKER_IMAGE = 'ankushnagpal10/wordpress-nginx:v1'  // Docker image name and tag
         //KUBECONFIG = '~/.kube/config'  // Path to the kubeconfig file (adjust as needed)
+        CLUSTER_NAME = 'my-kind-cluster'
     }
     stages {
         stage('Git Checkout') {
@@ -30,7 +31,7 @@ environment {
                     sh 'kubectl version --client'
                     sh 'pwd'
                     // Create or use an existing KIND cluster
-                    sh 'kind create cluster --config 04-wordpress-deployment/kind-cluster-config.yaml --name my-kind-cluster || true' // Skip if already exists
+                    sh 'kind create cluster --config 04-wordpress-deployment/kind-cluster-config.yaml --name ${CLUSTER_NAME} || true' // Skip if already exists
                 }
             }
         }
@@ -39,8 +40,8 @@ environment {
                 script {
                     dir('04-wordpress-deployment/') {
                         echo 'Deploying to KIND Cluster...'
-                        //sh 'kubectl config use-context kind-my-kind-cluster'
                         sh '''
+                        kubectl cluster-info --context kind-${CLUSTER_NAME}
                         kubectl create ns wordpress || true
                         kubectl apply -f secret.yaml
                         kubectl apply -f nginx-cm.yaml
@@ -56,5 +57,14 @@ environment {
                 }
             }
         }
-    }       
+    } 
+    post {
+        always {
+            script {
+                echo "Cleaning up KIND cluster..."
+                sh "kind delete cluster --name ${CLUSTER_NAME}"
+            }
+        }
+    }
+}
 }
