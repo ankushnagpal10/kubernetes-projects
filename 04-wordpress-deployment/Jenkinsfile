@@ -39,7 +39,7 @@ environment {
                 script {
                     dir('04-wordpress-deployment/') {
                         echo 'Deploying to KIND Cluster...'
-                        sh 'kubectl config use-context kind-my-kind-cluster'
+                        //sh 'kubectl config use-context kind-my-kind-cluster'
                         sh '''
                         kubectl create ns wordpress || true
                         kubectl apply -f secret.yaml
@@ -50,7 +50,7 @@ environment {
                         kubectl apply -f networkpolicy.yaml
                         '''
                         sh 'kubectl get pods -n wordpress'
-                        sh 'kubectl port-forward service/wordpress-service 3000:80'
+                        sh 'kubectl port-forward service/wordpress-service 3000:80 -n wordpress'
                     }
                 }
             }
