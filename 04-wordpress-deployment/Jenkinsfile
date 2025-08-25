@@ -49,7 +49,7 @@ environment {
                         kubectl apply -f wordpress.yaml
                         kubectl apply -f networkpolicy.yaml
                         '''
-                        sh 'kubectl get pods -ns wordpress'
+                        sh 'kubectl get pods -n wordpress'
                         sh 'kubectl port-forward service/wordpress-service 3000:80'
                     }
                 }
