@@ -58,12 +58,4 @@ environment {
             }
         }
     } 
-    post {
-        always {
-            script {
-                echo "Cleaning up KIND cluster..."
-                sh "kind delete cluster --name ${CLUSTER_NAME}"
-            }
-        }
-    }
 }
