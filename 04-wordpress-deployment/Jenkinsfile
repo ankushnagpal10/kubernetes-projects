@@ -34,5 +34,23 @@ environment {
                 }
             }
         }
+        stage('Deploy to KIND Cluster') {
+            steps {
+                script {
+                    echo 'Deploying to KIND Cluster...'
+                    sh 'kubectl config use-context kind-my-kind-cluster'
+                    sh '''
+                    kubectl create ns wordpress
+                    kubectl apply -f secret.yaml
+                    kubectl apply -f nginx-cm.yaml
+                    kubectl apply -f mysql-cm.yaml
+                    kubectl apply -f mysql.yaml
+                    kubectl apply -f wordpress.yaml
+                    kubectl apply -f networkpolicy.yaml
+                    '''
+                    sh 'kubectl get pods'
+                }
+            }
+        }
     }       
 }
