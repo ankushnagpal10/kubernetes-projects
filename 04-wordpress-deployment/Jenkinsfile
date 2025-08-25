@@ -1,7 +1,7 @@
 pipeline {
     agent any
 environment {
-        DOCKER_IMAGE = 'ankushnagpal10/wordpress-nginx:latest'  // Docker image name and tag
+        DOCKER_IMAGE = 'ankushnagpal10/wordpress-nginx:v1'  // Docker image name and tag
         //KUBECONFIG = '~/.kube/config'  // Path to the kubeconfig file (adjust as needed)
     }
     stages {
@@ -28,9 +28,9 @@ environment {
                     // Ensure KIND and kubectl are installed
                     sh 'kind version'
                     sh 'kubectl version --client'
-
+                    sh 'pwd'
                     // Create or use an existing KIND cluster
-                    sh 'kind create cluster --config ~/devops-lab/k8s/kind-cluster-config.yaml --name my-kind-cluster || true' // Skip if already exists
+                    sh 'kind create cluster --config 04-wordpress-deployment/kind-cluster-config.yaml --name my-kind-cluster || true' // Skip if already exists
                 }
             }
         }
