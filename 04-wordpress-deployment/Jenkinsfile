@@ -1,0 +1,38 @@
+pipeline {
+    agent any
+environment {
+        DOCKER_IMAGE = 'ankushnagpal10/wordpress-nginx:latest'  // Docker image name and tag
+        //KUBECONFIG = '~/.kube/config'  // Path to the kubeconfig file (adjust as needed)
+    }
+    stages {
+        stage('Git Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/ankushnagpal10/kubernetes-projects'
+            }
+        }
+        stage('Docker Build and Push') {
+            steps {
+                script {
+                    withDockerRegistry(credentialsId: 'docker_cred') {
+                        dir('04-wordpress-deployment/Docker') {
+                            sh 'docker build -t $DOCKER_IMAGE .'
+                            sh ' docker push $DOCKER_IMAGE'
+                        }
+                    }
+                }
+            }
+        }
+        stage('Set up KIND Cluster') {
+            steps {
+                script {
+                    // Ensure KIND and kubectl are installed
+                    sh 'kind version'
+                    sh 'kubectl version --client'
+
+                    // Create or use an existing KIND cluster
+                    sh 'kind create cluster --config ~/devops-lab/k8s/kind-cluster-config.yaml --name my-kind-cluster || true' // Skip if already exists
+                }
+            }
+        }
+    }       
+}
