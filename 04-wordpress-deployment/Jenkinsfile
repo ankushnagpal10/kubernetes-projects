@@ -41,7 +41,7 @@ environment {
                         echo 'Deploying to KIND Cluster...'
                         sh 'kubectl config use-context kind-my-kind-cluster'
                         sh '''
-                        kubectl create ns wordpress
+                        kubectl create ns wordpress || true
                         kubectl apply -f secret.yaml
                         kubectl apply -f nginx-cm.yaml
                         kubectl apply -f mysql-cm.yaml
